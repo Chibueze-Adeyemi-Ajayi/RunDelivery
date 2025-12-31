@@ -71,6 +71,7 @@ class App {
             logger.info(`Server is running on port ${config.app.port} in ${config.app.env} mode`);
         });
     }
+
 }
 
 module.exports = new App();
