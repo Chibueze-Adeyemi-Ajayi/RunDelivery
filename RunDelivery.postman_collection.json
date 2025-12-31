@@ -2,7 +2,7 @@
     "info": {
         "_postman_id": "b3e36dda-140e-4bb4-8a12-d3e36dda140e",
         "name": "RunDelivery API",
-        "description": "Postman collection for RunDelivery API including HTTP endpoints and WebSocket events.",
+        "description": "Postman collection for RunDelivery API including HTTP endpoints and Socket.IO real-time events.",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -167,56 +167,41 @@
             ]
         },
         {
-            "name": "WebSockets",
+            "name": "Socket.IO Real-Time",
             "item": [
                 {
-                    "name": "Driver Location Flow",
-                    "protocolProfileBehavior": {
-                        "disabledSystemHeaders": {}
-                    },
+                    "name": "Connect (Socket.IO)",
                     "request": {
-                        "method": "WS",
+                        "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "ws://localhost:3000",
-                            "protocol": "ws",
+                            "raw": "http://localhost:3000/socket.io/?EIO=4&transport=polling",
+                            "protocol": "http",
                             "host": [
                                 "localhost"
                             ],
                             "port": "3000",
                             "path": [
+                                "socket.io",
                                 ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "EIO",
+                                    "value": "4"
+                                },
+                                {
+                                    "key": "transport",
+                                    "value": "polling"
+                                }
                             ]
                         },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        }
+                        "description": "This request simulates the HTTP polling handshake of Socket.IO. In Postman, prefer creating a **WebSocket Request** set to **Socket.IO** mode pointing to `ws://localhost:3000`."
                     },
-                    "response": [],
-                    "events": [
-                        {
-                            "listen": "test",
-                            "script": {
-                                "type": "text/javascript",
-                                "exec": [
-                                    "// Example Usage Instructions:",
-                                    "// 1. Connect to ws://localhost:3000 used Socket.IO setting in Postman (Enable Socket.IO option)",
-                                    "// 2. Add an event listener for 'driver_location'",
-                                    "// 3. Send event 'join_order' with arguments: 'ORDER_ID'",
-                                    "// 4. Send event 'update_location' with arguments: { orderId: 'ORDER_ID', latitude: 12.345, longitude: 98.765 }"
-                                ]
-                            }
-                        }
-                    ]
+                    "response": []
                 }
             ],
-            "description": "Socket.IO events. Please make sure to select 'Socket.IO' as the request type in Postman."
+            "description": "For full real-time testing:\n\n1. Use Postman's **WebSocket Request** mode.\n2. Select **Socket.IO** from the request type dropdown.\n3. Connect to `ws://localhost:3000`.\n4. Events:\n    - Emit `join_order` with `orderId` String.\n    - Emit `update_location` with `{ \"orderId\": \"...\", \"latitude\": 10, \"longitude\": 10 }` JSON.\n    - Listen for `driver_location`."
         }
     ],
     "variable": [

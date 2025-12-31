@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer View | RunDelivery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .status-connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        #logs {
+            height: 300px;
+            overflow-y: auto;
+            background: #333;
+            color: #0f0;
+            font-family: monospace;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 2px;
+        }
+
+        .log-time {
+            color: #888;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <a href="test-socket.html" style="color: #666; text-decoration: none;">&larr; Back to Hub</a>
+            <a href="driver.html" target="_blank" style="color: #007bff; text-decoration: none; font-weight: bold;">Open
+                Driver App ↗</a>
+        </div>
+        <h1>Customer App <span id="connectionStatus" class="status-badge status-disconnected">Disconnected</span></h1>
+
+        <div class="form-group">
+            <label for="joinOrderId">Order ID to Track:</label>
+            <input type="text" id="joinOrderId" placeholder="e.g. 64f..." value="order_123">
+        </div>
+        <button id="btnJoin" onclick="joinOrder()">Join Order Room</button>
+        <p style="font-size: 0.8em; color: #666; margin-top: 5px;">Click to verify you are listening to updates for this
+            order.</p>
+
+        <div id="logs">
+            <!-- Logs will appear here -->
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+        const logsDiv = document.getElementById('logs');
+        const statusBadge = document.getElementById('connectionStatus');
+
+        function log(message) {
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+            logsDiv.insertBefore(entry, logsDiv.firstChild);
+        }
+
+        socket.on('connect', () => {
+            log('✅ Connected to Server');
+            statusBadge.textContent = 'Connected';
+            statusBadge.className = 'status-badge status-connected';
+        });
+
+        socket.on('disconnect', () => {
+            log('❌ Disconnected from Server');
+            statusBadge.textContent = 'Disconnected';
+            statusBadge.className = 'status-badge status-disconnected';
+        });
+
+        socket.on('driver_location', (data) => {
+            log(`📍 <b>Received Location:</b> Order: ${data.orderId} | Lat: ${data.latitude}, Lng: ${data.longitude}`);
+        });
+
+        socket.on('order_status_change', (data) => {
+            log(`🔔 <b>Status Changed:</b> Order: ${data.orderId} | New Status: ${data.status.toUpperCase()}`);
+        });
+
+        function joinOrder() {
+            const orderId = document.getElementById('joinOrderId').value;
+            if (!orderId) return alert('Enter an Order ID');
+
+            socket.emit('join_order', orderId);
+            log(`➡️ Joined Room: <b>order_${orderId}</b>`);
+        }
+    </script>
+</body>
+
+</html>

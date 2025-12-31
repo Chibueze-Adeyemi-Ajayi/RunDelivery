@@ -7,8 +7,12 @@ class SocketService {
     constructor(server) {
         this.io = socketIo(server, {
             cors: {
-                origin: "*", // Configure as needed for security
-                methods: ["GET", "POST"]
+                // Allow any origin with credentials
+                origin: (origin, callback) => {
+                    callback(null, true);
+                },
+                methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+                credentials: true
             }
         });
 

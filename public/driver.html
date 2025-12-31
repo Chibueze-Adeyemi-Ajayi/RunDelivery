@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver View | RunDelivery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .status-connected {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        #logs {
+            height: 200px;
+            overflow-y: auto;
+            background: #333;
+            color: #0f0;
+            font-family: monospace;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 2px;
+        }
+
+        .log-time {
+            color: #888;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <a href="test-socket.html" style="color: #666; text-decoration: none;">&larr; Back to Hub</a>
+            <a href="client.html" target="_blank" style="color: #007bff; text-decoration: none; font-weight: bold;">Open
+                Customer App ↗</a>
+        </div>
+        <h1>Driver App <span id="connectionStatus" class="status-badge status-disconnected">Disconnected</span></h1>
+
+        <div class="form-group">
+            <label for="emitOrderId">Order ID:</label>
+            <input type="text" id="emitOrderId" placeholder="e.g. 64f..." value="order_123">
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <div class="form-group" style="flex:1">
+                <label>Lat:</label>
+                <input type="number" id="lat" value="6.5244">
+            </div>
+            <div class="form-group" style="flex:1">
+                <label>Lng:</label>
+                <input type="number" id="lng" value="3.3792">
+            </div>
+        </div>
+        <button id="btnEmit" onclick="sendLocation()">Update Location</button>
+        <button id="btnAuto" onclick="toggleAutoMove()" style="margin-top: 10px; background-color: #28a745;">Start
+            Auto-Move Demo</button>
+
+        <div id="logs">
+            <!-- Logs will appear here -->
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+        const logsDiv = document.getElementById('logs');
+        const statusBadge = document.getElementById('connectionStatus');
+        let autoMoveInterval = null;
+
+        function log(message) {
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+            logsDiv.insertBefore(entry, logsDiv.firstChild);
+        }
+
+        socket.on('connect', () => {
+            log('✅ Connected to Server');
+            statusBadge.textContent = 'Connected';
+            statusBadge.className = 'status-badge status-connected';
+        });
+
+        socket.on('disconnect', () => {
+            log('❌ Disconnected from Server');
+            statusBadge.textContent = 'Disconnected';
+            statusBadge.className = 'status-badge status-disconnected';
+        });
+
+        function sendLocation() {
+            const orderId = document.getElementById('emitOrderId').value;
+            const lat = parseFloat(document.getElementById('lat').value);
+            const lng = parseFloat(document.getElementById('lng').value);
+
+            if (!orderId) return alert('Enter an Order ID');
+
+            const payload = { orderId, latitude: lat, longitude: lng };
+            socket.emit('update_location', payload);
+            log(`⬅️ Sent Location: ${lat}, ${lng}`);
+        }
+
+        function toggleAutoMove() {
+            const btn = document.getElementById('btnAuto');
+            if (autoMoveInterval) {
+                clearInterval(autoMoveInterval);
+                autoMoveInterval = null;
+                btn.textContent = 'Start Auto-Move Demo';
+                btn.style.backgroundColor = '#28a745';
+            } else {
+                btn.textContent = 'Stop Auto-Move';
+                btn.style.backgroundColor = '#dc3545';
+
+                autoMoveInterval = setInterval(() => {
+                    const latInput = document.getElementById('lat');
+                    const lngInput = document.getElementById('lng');
+
+                    // Random small movement
+                    latInput.value = (parseFloat(latInput.value) + (Math.random() - 0.5) * 0.001).toFixed(4);
+                    lngInput.value = (parseFloat(lngInput.value) + (Math.random() - 0.5) * 0.001).toFixed(4);
+
+                    sendLocation();
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+
+</html>

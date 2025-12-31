@@ -30,8 +30,11 @@ class App {
     }
 
     initializeMiddlewares() {
-        this.app.use(helmet());
-        this.app.use(cors());
+        this.app.use(helmet({
+            contentSecurityPolicy: false, // Disable CSP for simplicity in this demo to allow CDN scripts
+            crossOriginEmbedderPolicy: false, // Disable COEP to allow external resources without CORP headers
+        }));
+        this.app.use(cors({ origin: true, credentials: true }));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
@@ -40,6 +43,9 @@ class App {
     initializeRoutes() {
         // Swagger Documentation Route
         this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
+        // Serve Static Files (Public)
+        this.app.use(express.static('public'));
 
         this.app.use('/api/v1', routes);
 
