@@ -1,0 +1,13 @@
+{
+  "name": "rundelivery",
+  "version": "1.0.0",
+  "description": "Delivery assessment API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
