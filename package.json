@@ -1,7 +1,7 @@
 {
   "name": "rundelivery",
   "version": "1.0.0",
-  "description": "Delivery assessment API",
+  "description": "Professional production-ready Express.js Logistics API with OOP, WebSockets, and Swagger",
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
