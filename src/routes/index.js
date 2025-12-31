@@ -38,6 +38,14 @@ router.get('/assessment', (req, res) => {
             {
                 question: 'Question 3: Redis vs. Message Broker',
                 answer: 'Using redis or message broker is a choice of functionality, redis would be used for quick I/O operation of data and message broker excels at interprocess communication between different services.'
+            },
+            {
+                question: 'Question 4: What happens if a client is offline when the event occurs?',
+                answer: 'When a client is offline, they miss the event entirely in a standard WebSocket implementation. The server attempts to push the data, but since the connection is broken, the packet is discarded. Socket.IO does not buffer events for offline clients by default.'
+            },
+            {
+                question: 'Question 5: How can the client get the correct status after reconnecting?',
+                answer: 'To get the correct status after reconnecting, the client should immediately trigger a pull-based socket event to fetch the current authoritative state from the database. Other methods include redis for caching previous data that might have been lost.'
             }
         ]
     });

@@ -183,6 +183,44 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- Question 4 -->
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    Question 4: What happens if a client is offline when the event occurs?
+                </button>
+                <div class="accordion-content">
+                    <p>When a client is offline, the following occurs:</p>
+                    <ul>
+                        <li><b>Missed Event:</b> In a standard WebSocket implementation without persistence, the client
+                            misses the event entirely. The server attempts to push the data, but since the connection is
+                            broken, the packet is discarded.</li>
+                        <li><b>Lack of Buffering:</b> By default, Socket.IO does not buffer events for offline clients
+                            unless specifically configured with an acknowledgement system or a persistent message store.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    Question 5: How can the client get the correct status after reconnecting?
+                </button>
+                <div class="accordion-content">
+                    <p>To ensure data consistency after a reconnection, the following patterns are used:</p>
+                    <ul>
+                        <li><b>State Synchronization:</b> Upon re-establishing the connection (the `connect` event), the
+                            client should immediately trigger a <b>REST API call</b> or a <b>pull-based socket event</b>
+                            (e.g., `get_order_status`) to fetch the current, authoritative state from the database.</li>
+                        <li><b>Event Repositories:</b> Implementing an event store (like a message queue with
+                            persistence) allows the client to "catch up" by requesting all events that occurred after
+                            its last recorded timestamp.</li>
+                        <li><b>Latest State Caching:</b> Using Redis to store the "Latest Known Location" allows the
+                            server to push the most recent data to the client as soon as they rejoin the room.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
