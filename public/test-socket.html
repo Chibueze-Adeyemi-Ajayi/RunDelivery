@@ -168,6 +168,7 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('apps')">📱 Live Apps</button>
         <button class="tab-btn" onclick="switchTab('docs')">📚 Documentation</button>
+        <a href="assessment.html" class="tab-btn" style="text-decoration: none;">📝 Assessment</a>
     </div>
 
     <!-- Tab 1: Apps -->
@@ -225,13 +226,19 @@
     <script>
         function switchTab(tabId) {
             // Remove active class from all buttons and contents
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.tagName === 'BUTTON') btn.classList.remove('active');
+            });
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
             // Add active class to selected button and content
-            document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            const activeBtn = document.querySelector(`button[onclick="switchTab('${tabId}')"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            const activeContent = document.getElementById(tabId);
+            if (activeContent) activeContent.classList.add('active');
         }
     </script>
+</body>
 
 </html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment | RunDelivery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #666;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #007bff;
+        }
+
+        /* Accordion Styling */
+        .accordion {
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .accordion-item {
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 18px 25px;
+            background: #fff;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            transition: background 0.2s;
+        }
+
+        .accordion-header:hover {
+            background: #f8f9fa;
+        }
+
+        .accordion-header::after {
+            content: '▼';
+            font-size: 0.8em;
+            color: #999;
+            transition: transform 0.3s;
+        }
+
+        .accordion-item.active .accordion-header::after {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            background: #fff;
+            padding: 0 25px;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 600px;
+            padding: 20px 25px;
+        }
+
+        .accordion-content p {
+            margin-top: 0;
+            line-height: 1.6;
+        }
+
+        .accordion-content ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .accordion-content li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        b {
+            color: #007bff;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="test-socket.html" class="back-link">&larr; Back to Hub</a>
+
+    <div class="container">
+        <h1>ANSWERS TO ASSESSMENT QUESTIONS</h1>
+
+        <div class="accordion">
+            <!-- Question 1 -->
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    Question 1: Challenges with 1000+ Frequent Updates
+                </button>
+                <div class="accordion-content">
+                    <p>When over 1000 drivers send location updates every few seconds, the following challenges can
+                        arise:</p>
+                    <ul>
+                        <li><b>Server Overload:</b> High frequency of incoming requests can exhaust CPU and memory
+                            resources.</li>
+                        <li><b>Database Bottlenecks:</b> Synchronous database writes for every update can create a
+                            massive queue and slow down the entire system.</li>
+                        <li><b>Massive Data Growth:</b> Storing every single historical coordinate point can lead to
+                            rapid storage depletion.</li>
+                        <li><b>Increased Latency:</b> Network congestion and processing delays can result in stale
+                            location data being shown to customers.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    Question 2: How to Scale a Real-Time System
+                </button>
+                <div class="accordion-content">
+                    <p>To scale a real-time system to handle significant growth, I would implement the following
+                        strategies:</p>
+                    <ul>
+                        <li><b>Event-Driven Architecture:</b> Use a robust message queue system (like RabbitMQ or Kafka)
+                            to decouple data ingestion from processing.</li>
+                        <li><b>Horizontal Scaling:</b> Utilize containerization (Docker/Kubernetes/Swarm) to spin up
+                            multiple instances of the API and WebSocket servers behind a load balancer.</li>
+                        <li><b>WebSocket Optimization:</b> Use a distributed WebSocket strategy (using Redis Adapter) to
+                            sync messages across multiple server nodes.</li>
+                        <li><b>Geospatial Indexing:</b> Implement specialized database indexing (like MongoDB's
+                            2dsphere) to optimize "nearby" queries.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">
+                    Question 3: Redis vs. Message Broker
+                </button>
+                <div class="accordion-content">
+                    <p>Choosing between Redis and a dedicated Message Broker depends on the specific requirements:</p>
+                    <ul>
+                        <li><b>Redis:</b> Best for quick I/O operations, caching latest state (e.g., current driver
+                            location), and simple Pub/Sub needs. It is extremely fast due to being in-memory.</li>
+                        <li><b>Message Broker:</b> Excels at reliable inter-process communication, complex routing,
+                            ensuring message delivery (persistence), and handling tasks that need to be processed
+                            asynchronously by different services.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const isActive = item.classList.contains('active');
+
+            // Close all items
+            document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
+
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+</html>
