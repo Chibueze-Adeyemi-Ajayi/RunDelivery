@@ -21,11 +21,8 @@ class SocketService {
     }
 
     initializeMiddlewares() {
-        // middleware for auth - Question 1.3: Prevent unauthorized users
+
         this.io.use((socket, next) => {
-            // In a real app, verify token here
-            // const token = socket.handshake.auth.token;
-            // if (isValid(token)) next(); else next(new Error('Unauthorized'));
             logger.info(`Socket connection attempt: ${socket.id}`);
             next();
         });
@@ -46,7 +43,6 @@ class SocketService {
                 const { orderId, latitude, longitude } = data;
 
                 // Question 1.2: Emit update to room
-                // We broadcast to everyone in the room EXCEPT the sender (the driver)
                 socket.to(`order_${orderId}`).emit('driver_location', {
                     orderId,
                     latitude,
@@ -54,13 +50,11 @@ class SocketService {
                     timestamp: new Date()
                 });
 
-                // Note: We don't save to DB here as per requirements (only latest needed, usually stored in Redis)
             });
 
             // Question 1.3: Handle disconnection
             socket.on('disconnect', () => {
                 logger.info(`Client disconnected: ${socket.id}`);
-                // Handle cleanup if necessary, e.g., mark driver as offline if it was a driver
             });
         });
     }

@@ -12,4 +12,8 @@ router.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date() });
 });
 
+// Health Check
+router.head('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', timestamp: new Date() });
+});
 module.exports = router;

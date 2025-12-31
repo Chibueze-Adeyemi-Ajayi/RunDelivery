@@ -31,8 +31,8 @@ class App {
 
     initializeMiddlewares() {
         this.app.use(helmet({
-            contentSecurityPolicy: false, // Disable CSP for simplicity in this demo to allow CDN scripts
-            crossOriginEmbedderPolicy: false, // Disable COEP to allow external resources without CORP headers
+            contentSecurityPolicy: false,
+            crossOriginEmbedderPolicy: false,
         }));
         this.app.use(cors({ origin: true, credentials: true }));
         this.app.use(express.json());

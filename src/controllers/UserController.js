@@ -7,9 +7,6 @@ class UserController extends BaseController {
         this.userService = userService;
     }
 
-    // Wrap async methods to catch errors or use express-async-handler
-    // For simplicity, using try/catch here or we can use a middleware
-
     createUser = async (req, res) => {
         try {
             const user = await this.userService.create(req.body);

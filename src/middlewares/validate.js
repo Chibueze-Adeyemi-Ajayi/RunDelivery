@@ -19,9 +19,6 @@ const validate = (schema) => (req, res, next) => {
 
     if (error) {
         const errorMessage = error.details.map((details) => details.message).join(', ');
-        // We can just send the error directly using the standard response format
-        // Re-using BaseController logic strictly isn't possible as this is a function, 
-        // but we can mimic the error structure.
         return res.status(400).json({
             status: 'error',
             message: errorMessage,

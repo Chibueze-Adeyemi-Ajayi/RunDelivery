@@ -16,7 +16,7 @@ const orderSchema = new mongoose.Schema({
     }],
     status: {
         type: String,
-        enum: ['PENDING', 'PICKED_UP', 'IN_TRANSIT', 'DELIVERED'], // Question 2: Statuses
+        enum: ['PENDING', 'PICKED_UP', 'IN_TRANSIT', 'DELIVERED'],
         default: 'PENDING'
     },
     currentLocation: {
