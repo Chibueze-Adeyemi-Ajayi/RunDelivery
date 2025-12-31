@@ -19,12 +19,17 @@ const router = express.Router();
  *         id:
  *           type: string
  *           description: The auto-generated id of the user
+ *           readOnly: true
  *         username:
  *           type: string
  *           description: The user name
  *         email:
  *           type: string
  *           description: The user email
+ *         password:
+ *           type: string
+ *           description: The user password
+ *           writeOnly: true
  *         role:
  *           type: string
  *           enum: [user, admin]
@@ -33,12 +38,12 @@ const router = express.Router();
  *           type: string
  *           format: date
  *           description: The date the user was added
+ *           readOnly: true
  *       example:
- *         id: d5fE_asz
  *         username: john_doe
  *         email: john@example.com
+ *         password: password123
  *         role: user
- *         createdAt: 2023-03-10T04:05:06.157Z
  */
 
 /**

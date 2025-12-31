@@ -17,6 +17,7 @@ const router = express.Router();
  *         id:
  *           type: string
  *           description: The auto-generated id of the order
+ *           readOnly: true
  *         customer:
  *           type: string
  *           description: The user ID of the customer
@@ -46,8 +47,8 @@ const router = express.Router();
  *         createdAt:
  *           type: string
  *           format: date
+ *           readOnly: true
  *       example:
- *         id: 60a7e0a8c2e646274494165d
  *         customer: 60a7e0a8c2e646274494165a
  *         status: PENDING
  *         items: [{ name: "Box", quantity: 1 }]

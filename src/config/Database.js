@@ -12,6 +12,7 @@ class Database {
             this.connection = await mongoose.connect(this.uri, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
+                dbName: "run_delivery"
             });
             logger.info('Database connected successfully');
         } catch (error) {

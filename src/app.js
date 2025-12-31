@@ -13,6 +13,7 @@ const swaggerSpecs = require('./config/swagger');
 
 class App {
     constructor() {
+
         this.app = express();
         this.server = http.createServer(this.app); // Create HTTP server
         this.database = new Database(config.db.uri);
